@@ -1,0 +1,7 @@
+// /src/lib/getCartId.ts
+import { cookies } from "next/headers";
+
+export function getCartId() {
+  const cartId = cookies().get("_medusa_cart_id")?.value;
+  return cartId;
+}
