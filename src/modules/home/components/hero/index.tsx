@@ -12,9 +12,7 @@ const Hero = () => {
         <Heading level="h2" className="text-2xl leading-10 font-normal">
           Your one-stop shop for all things awesome
         </Heading>
-        <Button variant="primary" className="mt-4">
-          Shop Now
-        </Button>
+       
        
       </div>
       <Image src="/path/to/your/image.jpg" alt="Hero Image" layout="fill" objectFit="cover" />
