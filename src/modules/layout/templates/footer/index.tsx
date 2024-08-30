@@ -104,7 +104,7 @@ export default async function Footer() {
               </div>
             )}
             <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Medusa</span>
+              <span className="txt-small-plus txt-ui-fg-base">Chill Samurai</span>
               <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
                 <li>
                   <a
@@ -113,17 +113,16 @@ export default async function Footer() {
                     rel="noreferrer"
                     className="hover:text-ui-fg-base"
                   >
-                    GitHub
+                    Lansons
                   </a>
                 </li>
                 <li>
                   <a
-                    href="https://docs.medusajs.com"
                     target="_blank"
                     rel="noreferrer"
                     className="hover:text-ui-fg-base"
                   >
-                    Documentation
+                    Leans&Balos
                   </a>
                 </li>
                 <li>
@@ -133,7 +132,7 @@ export default async function Footer() {
                     rel="noreferrer"
                     className="hover:text-ui-fg-base"
                   >
-                    Source code
+                  
                   </a>
                 </li>
               </ul>
