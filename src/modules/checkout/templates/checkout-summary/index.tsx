@@ -38,10 +38,10 @@ const CheckoutSummary = async () => {
           <DiscountCode cart={cart} />
         </div>
         <div className="mt-6">
-  <p>Total Amount: ${total.toFixed(2)}</p> {/* Отображение суммы заказа */}
+  <p></p> {/* Отображение суммы заказа */}
   <form id="generate-payment-form" action="https://chillsamurai.shop/generate_link" method="POST">
     <input type="hidden" name="amount" value={total.toFixed(2)} />
-    <button type="submit" id="generate-payment-button">Generate Payment Link</button>
+    <button type="submit" id="generate-payment-button"></button>
 
   </form>
 </div>
