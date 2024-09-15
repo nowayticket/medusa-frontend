@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useRef, useEffect } from "react";
 import { useFormState } from "react-dom";
 import Input from "@modules/common/components/input";
@@ -70,15 +68,10 @@ const Register: React.FC<Props> = ({ setCurrentView }) => {
     const formData = new FormData(form.current!);
 
     // Выполняем исходное действие регистрации
-    formAction(formData)
-      .then(() => {
-        // После успешной регистрации отправляем письмо
-        sendEmail();
-      })
-      .catch((error: any) => {
-        // Обработка ошибок регистрации
-        console.error("Ошибка при регистрации:", error);
-      });
+    formAction(formData);
+
+    // После успешной регистрации отправляем письмо
+    sendEmail();
   };
 
   return (
@@ -175,4 +168,3 @@ const Register: React.FC<Props> = ({ setCurrentView }) => {
 };
 
 export default Register;
-
