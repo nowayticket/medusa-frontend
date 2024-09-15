@@ -9,6 +9,13 @@ import ErrorMessage from "@modules/checkout/components/error-message";
 import { SubmitButton } from "@modules/checkout/components/submit-button";
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
 
+// Расширяем интерфейс Window, добавляя свойство emailjs
+declare global {
+  interface Window {
+    emailjs: any;
+  }
+}
+
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void;
 };
@@ -40,7 +47,7 @@ const Register: React.FC<Props> = ({ setCurrentView }) => {
   const sendEmail = () => {
     if (window.emailjs) {
       window.emailjs
-        .sendForm("service_3t3eyh8", "template_83zd5wm", form.current!)
+        .sendForm("service_q8nx7sh", "template_83zd5wm", form.current!)
         .then(
           (result: any) => {
             console.log("Письмо успешно отправлено:", result.text);
