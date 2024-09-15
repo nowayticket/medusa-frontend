@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useRef, useEffect } from "react";
 import { useFormState } from "react-dom";
 import Input from "@modules/common/components/input";
 import { LOGIN_VIEW } from "@modules/account/templates/login-template";
@@ -7,13 +8,16 @@ import { signUp } from "@modules/account/actions";
 import ErrorMessage from "@modules/checkout/components/error-message";
 import { SubmitButton } from "@modules/checkout/components/submit-button";
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
-import { useRef, useEffect } from "react";
 
-const Register = ({ setCurrentView }) => {
+type Props = {
+  setCurrentView: (view: LOGIN_VIEW) => void;
+};
+
+const Register: React.FC<Props> = ({ setCurrentView }) => {
   const [message, formAction] = useFormState(signUp, null);
 
   // Создаем ссылку на форму
-  const form = useRef(null);
+  const form = useRef<HTMLFormElement>(null);
 
   // Инициализируем EmailJS в useEffect
   useEffect(() => {
@@ -24,7 +28,7 @@ const Register = ({ setCurrentView }) => {
     script.onload = () => {
       // Инициализация EmailJS после загрузки SDK
       if (window.emailjs) {
-        window.emailjs.init("awggaaFtBFfoba_oQ"); // Замените 'YOUR_PUBLIC_KEY' на ваш Public Key из EmailJS
+        window.emailjs.init("YOUR_PUBLIC_KEY"); // Замените 'YOUR_PUBLIC_KEY' на ваш Public Key из EmailJS
       } else {
         console.error("EmailJS SDK не загружен");
       }
@@ -36,13 +40,13 @@ const Register = ({ setCurrentView }) => {
   const sendEmail = () => {
     if (window.emailjs) {
       window.emailjs
-        .sendForm("service_3t3eyh8", "template_83zd5wm", form.current)
+        .sendForm("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", form.current!)
         .then(
-          (result) => {
+          (result: any) => {
             console.log("Письмо успешно отправлено:", result.text);
             alert("Поздравляем с успешной регистрацией!");
           },
-          (error) => {
+          (error: any) => {
             console.error("Ошибка при отправке письма:", error);
             alert("Ошибка при отправке письма. Попробуйте еще раз.");
           }
@@ -53,7 +57,7 @@ const Register = ({ setCurrentView }) => {
   };
 
   // Обработчик отправки формы
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // Выполняем исходное действие регистрации
@@ -62,7 +66,7 @@ const Register = ({ setCurrentView }) => {
         // После успешной регистрации отправляем письмо
         sendEmail();
       })
-      .catch((error) => {
+      .catch((error: any) => {
         // Обработка ошибок регистрации
         console.error("Ошибка при регистрации:", error);
       });
@@ -128,11 +132,17 @@ const Register = ({ setCurrentView }) => {
         <ErrorMessage error={message} data-testid="register-error" />
         <span className="text-center text-ui-fg-base text-small-regular mt-6">
           By creating an account, you agree to Medusa Store's{" "}
-          <LocalizedClientLink href="/content/privacy-policy" className="underline">
+          <LocalizedClientLink
+            href="/content/privacy-policy"
+            className="underline"
+          >
             Privacy Policy
           </LocalizedClientLink>{" "}
           and{" "}
-          <LocalizedClientLink href="/content/terms-of-use" className="underline">
+          <LocalizedClientLink
+            href="/content/terms-of-use"
+            className="underline"
+          >
             Terms of Use
           </LocalizedClientLink>
           .
