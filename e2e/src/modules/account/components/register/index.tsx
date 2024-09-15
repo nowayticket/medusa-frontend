@@ -28,7 +28,7 @@ const Register: React.FC<Props> = ({ setCurrentView }) => {
     script.onload = () => {
       // Инициализация EmailJS после загрузки SDK
       if (window.emailjs) {
-        window.emailjs.init("YOUR_PUBLIC_KEY"); // Замените 'YOUR_PUBLIC_KEY' на ваш Public Key из EmailJS
+        window.emailjs.init("awggaaFtBFfoba_oQ"); // Замените 'YOUR_PUBLIC_KEY' на ваш Public Key из EmailJS
       } else {
         console.error("EmailJS SDK не загружен");
       }
@@ -40,7 +40,7 @@ const Register: React.FC<Props> = ({ setCurrentView }) => {
   const sendEmail = () => {
     if (window.emailjs) {
       window.emailjs
-        .sendForm("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", form.current!)
+        .sendForm("service_3t3eyh8", "template_83zd5wm", form.current!)
         .then(
           (result: any) => {
             console.log("Письмо успешно отправлено:", result.text);
