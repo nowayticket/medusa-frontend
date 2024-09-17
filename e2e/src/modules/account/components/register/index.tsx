@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 
 import Input from "@modules/common/components/input"
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
@@ -12,61 +12,42 @@ type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
 }
 
-// Добавьте эту строку, чтобы TypeScript знал о глобальном объекте emailjs
-declare const emailjs: any
-
 const Register = ({ setCurrentView }: Props) => {
   const formRef = useRef<HTMLFormElement>(null)
   const [message, setMessage] = useState<string | null>(null)
-  const [emailjsLoaded, setEmailjsLoaded] = useState(false)
-
-  useEffect(() => {
-    // Динамически загружаем SDK EmailJS
-    const script = document.createElement('script')
-    script.src = 'https://cdn.emailjs.com/sdk/3.2.0/email.min.js'
-    script.onload = () => {
-      // Инициализируем EmailJS с вашим Public Key
-      emailjs.init('awggaaFtBFfoba_oQ')
-      setEmailjsLoaded(true)
-    }
-    script.onerror = () => {
-      console.error('Не удалось загрузить скрипт EmailJS.')
-      setMessage('Произошла ошибка при загрузке EmailJS. Пожалуйста, попробуйте позже.')
-    }
-    document.body.appendChild(script)
-  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!emailjsLoaded) {
-      setMessage('Идёт загрузка EmailJS. Пожалуйста, подождите и попробуйте снова.')
-      return
-    }
-
     if (formRef.current) {
-      // Создаем копию FormData без пароля
+      // Удаляем поле пароля из отправляемых данных
       const formData = new FormData(formRef.current)
-      formData.delete('password') // Удаляем поле пароля
+      formData.delete('password')
 
-      // Преобразуем FormData в объект
-      const formDataObj: { [key: string]: any } = {}
-      formData.forEach((value, key) => {
-        formDataObj[key] = value
+      fetch('https://formspree.io/f/xpwaegzz', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: formData
       })
-
-      emailjs.send(
-        'service_3t3eyh8',       // Ваш Service ID
-        'template_83zd5wm',      // Ваш Template ID
-        formDataObj              // Объект с данными формы
-      )
-      .then((result: any) => {
-        console.log('Email sent successfully:', result.text)
-        setMessage('Регистрация прошла успешно! Пожалуйста, проверьте вашу электронную почту.')
-        formRef.current?.reset()
-      }, (error: any) => {
-        console.error('Ошибка при отправке письма:', error.text)
-        setMessage('Произошла ошибка при отправке письма. Пожалуйста, попробуйте еще раз.')
+      .then((response) => {
+        if (response.ok) {
+          setMessage('Регистрация прошла успешно! Пожалуйста, проверьте вашу электронную почту.')
+          formRef.current?.reset()
+        } else {
+          response.json().then((data) => {
+            if (Object.hasOwn(data, 'errors')) {
+              setMessage(data["errors"].map((error: any) => error["message"]).join(", "))
+            } else {
+              setMessage('Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.')
+            }
+          })
+        }
+      })
+      .catch((error) => {
+        console.error('Ошибка при отправке формы:', error)
+        setMessage('Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.')
       })
     }
   }
@@ -115,6 +96,7 @@ const Register = ({ setCurrentView }: Props) => {
             autoComplete="tel"
             data-testid="phone-input"
           />
+          {/* Убираем поле пароля из отправляемых данных */}
           <Input
             label="Password"
             name="password"
