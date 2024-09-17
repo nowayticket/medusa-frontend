@@ -18,6 +18,7 @@ declare const emailjs: any
 const Register = ({ setCurrentView }: Props) => {
   const formRef = useRef<HTMLFormElement>(null)
   const [message, setMessage] = useState<string | null>(null)
+  const [emailjsLoaded, setEmailjsLoaded] = useState(false)
 
   useEffect(() => {
     // Динамически загружаем SDK EmailJS
@@ -26,12 +27,22 @@ const Register = ({ setCurrentView }: Props) => {
     script.onload = () => {
       // Инициализируем EmailJS с вашим Public Key
       emailjs.init('awggaaFtBFfoba_oQ')
+      setEmailjsLoaded(true)
+    }
+    script.onerror = () => {
+      console.error('Не удалось загрузить скрипт EmailJS.')
+      setMessage('Произошла ошибка при загрузке EmailJS. Пожалуйста, попробуйте позже.')
     }
     document.body.appendChild(script)
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!emailjsLoaded) {
+      setMessage('Идёт загрузка EmailJS. Пожалуйста, подождите и попробуйте снова.')
+      return
+    }
 
     if (formRef.current) {
       // Создаем копию FormData без пароля
