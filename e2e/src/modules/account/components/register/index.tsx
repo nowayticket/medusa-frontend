@@ -1,7 +1,6 @@
 "use client"
 
-import { useRef, useState } from 'react'
-import emailjs from '@emailjs/browser'
+import { useRef, useState, useEffect } from 'react'
 
 import Input from "@modules/common/components/input"
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
@@ -13,28 +12,48 @@ type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
 }
 
+// Добавьте эту строку, чтобы TypeScript знал о глобальном объекте emailjs
+declare const emailjs: any
+
 const Register = ({ setCurrentView }: Props) => {
   const formRef = useRef<HTMLFormElement>(null)
   const [message, setMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Динамически загружаем SDK EmailJS
+    const script = document.createElement('script')
+    script.src = 'https://cdn.emailjs.com/sdk/3.2.0/email.min.js'
+    script.onload = () => {
+      // Инициализируем EmailJS с вашим Public Key
+      emailjs.init('awggaaFtBFfoba_oQ')
+    }
+    document.body.appendChild(script)
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
     if (formRef.current) {
-      emailjs.sendForm(
+      // Создаем копию FormData без пароля
+      const formData = new FormData(formRef.current)
+      formData.delete('password') // Удаляем поле пароля
+
+      // Преобразуем FormData в объект
+      const formDataObj: { [key: string]: any } = {}
+      formData.forEach((value, key) => {
+        formDataObj[key] = value
+      })
+
+      emailjs.send(
         'service_3t3eyh8',       // Ваш Service ID
         'template_83zd5wm',      // Ваш Template ID
-        formRef.current,
-        'awggaaFtBFfoba_oQ'      // Ваш Public Key
+        formDataObj              // Объект с данными формы
       )
-      .then((result) => {
+      .then((result: any) => {
         console.log('Email sent successfully:', result.text)
-        // Дополнительные действия после успешной отправки письма
-        // Например, отображение сообщения об успешной регистрации
         setMessage('Регистрация прошла успешно! Пожалуйста, проверьте вашу электронную почту.')
-        // Очистка формы
         formRef.current?.reset()
-      }, (error) => {
+      }, (error: any) => {
         console.error('Ошибка при отправке письма:', error.text)
         setMessage('Произошла ошибка при отправке письма. Пожалуйста, попробуйте еще раз.')
       })
@@ -94,9 +113,13 @@ const Register = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
-        <ErrorMessage error={message} data-testid="register-error" />
+        {message && (
+          <div className="text-center text-green-500 mt-4">
+            {message}
+          </div>
+        )}
         <span className="text-center text-ui-fg-base text-small-regular mt-6">
-          By creating an account, you agree to Medusa Store&apos;s{" "}
+          By creating an account, you agree to Medusa Store's{" "}
           <LocalizedClientLink
             href="/content/privacy-policy"
             className="underline"
@@ -129,4 +152,5 @@ const Register = ({ setCurrentView }: Props) => {
     </div>
   )
 }
+
 export default Register
