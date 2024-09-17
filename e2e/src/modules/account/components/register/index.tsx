@@ -129,5 +129,4 @@ const Register = ({ setCurrentView }: Props) => {
     </div>
   )
 }
-
 export default Register
